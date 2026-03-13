@@ -1,0 +1,27 @@
+# UA92 Junior Software Engineer Interview Simulator
+
+An interactive mock interview tool built for students on the UA92 92 Programme, Block 4: Personal Development.
+
+## What it does
+
+Students answer 10 real interview questions used by tech companies, covering:
+
+- HR & Motivation
+- Behavioural (STAR technique)
+- Technical fundamentals (stacks, queues, Big O)
+- Databases (SQL vs NoSQL)
+- Cybersecurity (SQL injection)
+- Problem solving (algorithms)
+- System design
+
+After submitting all 10 answers, students receive a full Pass / Fail result with score out of 100, grade from Distinction to Fail, question-by-question feedback, strengths and development areas, and personalised next steps.
+
+## How to use
+
+Click the link below — no account, no download, no login needed.
+
+[Open the Interview Simulator](https://yourusername.github.io/ua92-interview)
+
+## Module
+
+UA92-92P-201 · Block 4: Realise a Goal · 2025–26
