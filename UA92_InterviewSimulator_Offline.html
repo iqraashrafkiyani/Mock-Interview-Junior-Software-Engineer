@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Junior SWE Interview — UA92</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
+<style>
+:root{--ink:#080B14;--surface:rgba(255,255,255,0.04);--surface2:rgba(255,255,255,0.07);--border:rgba(255,255,255,0.09);--border2:rgba(255,255,255,0.18);--paper:#EEE9E0;--muted:#7A7670;--light:#B0AB9F;--orange:#E8601E;--orange2:#FF7A3D;--amber:#F0A500;--teal:#18B89A;--rose:#E0456A;--violet:#8B6EF5;--blue:#4A9EE8;--white:#FFFFFF}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--ink);color:var(--paper);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 40% at 15% 20%,rgba(232,96,30,0.08) 0%,transparent 60%),radial-gradient(ellipse 50% 30% at 85% 80%,rgba(139,110,245,0.07) 0%,transparent 60%),linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:auto,auto,44px 44px,44px 44px}
+.page{max-width:800px;margin:0 auto;padding:0 1.5rem 5rem;position:relative;z-index:1}
+
+/* HEADER */
+.site-header{padding:2.5rem 0 0}
+.ua92-strip{display:flex;align-items:center;gap:10px;margin-bottom:1.5rem}
+.ua92-badge{background:var(--orange);color:#fff;font-family:'Syne',sans-serif;font-weight:800;font-size:12px;letter-spacing:0.08em;padding:4px 11px;border-radius:5px}
+.ua92-strip span{font-size:12px;color:var(--muted);letter-spacing:0.05em;text-transform:uppercase}
+.hero-title{font-family:'Syne',sans-serif;font-size:clamp(2.2rem,6vw,3.8rem);font-weight:800;line-height:1.0;letter-spacing:-0.025em;margin-bottom:1rem}
+.hero-title .accent{color:var(--orange2)}
+.hero-title .dim{color:var(--muted);font-weight:400}
+.hero-sub{font-size:15px;color:var(--light);max-width:520px;line-height:1.7;margin-bottom:2rem}
+.stat-chips{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:2.5rem}
+.chip{display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:30px;padding:6px 14px;font-size:12px;color:var(--light);font-weight:500}
+.chip-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+/* PROGRESS */
+.prog-section{margin-bottom:1.75rem}
+.prog-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.prog-label{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)}
+.prog-count{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--orange2)}
+.prog-track{height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;border-radius:2px;width:0%;background:linear-gradient(90deg,var(--orange),var(--amber));transition:width 0.5s cubic-bezier(.4,0,.2,1);box-shadow:0 0 8px rgba(232,96,30,0.5)}
+
+/* NAME ROW */
+.name-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:2rem}
+@media(max-width:480px){.name-row{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)}
+.field input{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:11px 15px;color:var(--paper);font-family:'DM Sans',sans-serif;font-size:14px;transition:border-color 0.2s,background 0.2s}
+.field input:focus{outline:none;border-color:var(--orange);background:rgba(232,96,30,0.05)}
+.field input::placeholder{color:var(--muted)}
+
+/* QUESTION CARDS */
+.q-list{display:flex;flex-direction:column;gap:8px;margin-bottom:2rem}
+.q-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color 0.25s,background 0.25s,box-shadow 0.25s}
+.q-card:hover:not(.answered){border-color:var(--border2)}
+.q-card.active{border-color:rgba(232,96,30,0.45);background:rgba(232,96,30,0.04);box-shadow:0 4px 32px rgba(232,96,30,0.08)}
+.q-card.answered{border-color:rgba(24,184,154,0.35);background:rgba(24,184,154,0.03)}
+.q-header{display:flex;align-items:flex-start;gap:14px;padding:16px 18px;cursor:pointer;user-select:none}
+.q-num{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--muted);flex-shrink:0;margin-top:2px;transition:all 0.25s}
+.q-card.active .q-num{background:rgba(232,96,30,0.18);border-color:var(--orange);color:var(--orange2)}
+.q-card.answered .q-num{background:rgba(24,184,154,0.18);border-color:var(--teal);color:var(--teal);font-size:16px}
+.q-meta{flex:1;min-width:0}
+.type-tag{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;padding:3px 10px;border-radius:20px;margin-bottom:7px;border:1px solid}
+.type-tag::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;display:block}
+.tag-hr{color:var(--violet);border-color:rgba(139,110,245,0.3);background:rgba(139,110,245,0.08)}
+.tag-star{color:var(--amber);border-color:rgba(240,165,0,0.3);background:rgba(240,165,0,0.08)}
+.tag-tech{color:var(--teal);border-color:rgba(24,184,154,0.3);background:rgba(24,184,154,0.08)}
+.tag-algo{color:var(--blue);border-color:rgba(74,158,232,0.3);background:rgba(74,158,232,0.08)}
+.tag-db{color:var(--rose);border-color:rgba(224,69,106,0.3);background:rgba(224,69,106,0.08)}
+.tag-sec{color:var(--orange2);border-color:rgba(255,122,61,0.3);background:rgba(255,122,61,0.08)}
+.tag-ps{color:var(--amber);border-color:rgba(240,165,0,0.3);background:rgba(240,165,0,0.08)}
+.tag-sys{color:var(--violet);border-color:rgba(139,110,245,0.3);background:rgba(139,110,245,0.08)}
+.q-text{font-size:14px;color:var(--paper);line-height:1.55;font-weight:400}
+.q-chevron{font-size:10px;color:var(--muted);margin-top:12px;flex-shrink:0;transition:transform 0.3s}
+.q-card.active .q-chevron{transform:rotate(180deg);color:var(--orange)}
+.q-body{display:none;padding:0 18px 18px;animation:slideIn 0.2s ease}
+.q-body.open{display:block}
+@keyframes slideIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.tip-pill{display:flex;gap:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-left:2px solid var(--orange);border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:14px;font-size:12px;color:var(--light);font-style:italic;line-height:1.6}
+textarea{width:100%;min-height:120px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);border-radius:10px;padding:13px 15px;color:var(--paper);font-family:'DM Sans',sans-serif;font-size:14px;resize:vertical;line-height:1.65;transition:border-color 0.2s}
+textarea:focus{outline:none;border-color:var(--orange);background:rgba(232,96,30,0.04)}
+textarea::placeholder{color:var(--muted)}
+.ta-footer{display:flex;justify-content:space-between;align-items:center;margin:8px 0 12px}
+.char-count{font-size:11px;color:var(--muted)}
+.save-btn{display:inline-flex;align-items:center;gap:7px;background:var(--teal);color:#fff;border:none;border-radius:9px;padding:10px 22px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.04em;cursor:pointer;transition:opacity 0.2s,transform 0.15s,box-shadow 0.2s;box-shadow:0 3px 16px rgba(24,184,154,0.3)}
+.save-btn:hover{opacity:0.88;transform:translateY(-1px);box-shadow:0 5px 20px rgba(24,184,154,0.4)}
+.save-btn:active{transform:translateY(0)}
+
+/* SUBMIT */
+.submit-area{margin-top:0.5rem}
+.submit-status{font-size:13px;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.submit-btn{width:100%;padding:17px;background:linear-gradient(135deg,var(--orange) 0%,var(--orange2) 100%);color:#fff;border:none;border-radius:12px;font-family:'Syne',sans-serif;font-size:16px;font-weight:800;letter-spacing:0.04em;cursor:pointer;transition:opacity 0.2s,transform 0.15s,box-shadow 0.2s;box-shadow:0 6px 32px rgba(232,96,30,0.35);display:flex;align-items:center;justify-content:center;gap:10px}
+.submit-btn:hover:not(:disabled){opacity:0.92;transform:translateY(-2px);box-shadow:0 10px 40px rgba(232,96,30,0.45)}
+.submit-btn:disabled{background:rgba(255,255,255,0.06);color:var(--muted);cursor:not-allowed;box-shadow:none;transform:none}
+
+/* LOADING */
+#loading-screen{display:none;min-height:70vh;flex-direction:column;align-items:center;justify-content:center;gap:1.75rem;text-align:center;padding:4rem 0}
+.spinner{width:56px;height:56px;position:relative}
+.spinner::before,.spinner::after{content:'';position:absolute;border-radius:50%}
+.spinner::before{inset:0;border:3px solid rgba(255,255,255,0.06)}
+.spinner::after{inset:0;border:3px solid transparent;border-top-color:var(--orange);animation:spin 0.75s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700}
+.loading-steps{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.loading-step{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px;justify-content:center}
+.loading-step .ldot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+/* RESULT */
+#result-screen{display:none;padding-top:0.5rem}
+.verdict-hero{border-radius:18px;padding:2.5rem 2rem;text-align:center;margin-bottom:1.25rem;position:relative;overflow:hidden;border:1px solid}
+.verdict-hero::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 70% 50% at 50% 50%,var(--glow),transparent 70%);opacity:0.15}
+.hero-pass{background:linear-gradient(160deg,rgba(24,184,154,0.12),rgba(24,184,154,0.04));border-color:rgba(24,184,154,0.3);--glow:var(--teal)}
+.hero-border{background:linear-gradient(160deg,rgba(240,165,0,0.12),rgba(240,165,0,0.04));border-color:rgba(240,165,0,0.3);--glow:var(--amber)}
+.hero-fail{background:linear-gradient(160deg,rgba(224,69,106,0.12),rgba(224,69,106,0.04));border-color:rgba(224,69,106,0.3);--glow:var(--rose)}
+.verdict-emoji{font-size:56px;display:block;margin-bottom:14px}
+.verdict-eyebrow{font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px;opacity:0.7}
+.verdict-name{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,4.5vw,3rem);font-weight:800;letter-spacing:-0.02em;line-height:1.1;margin-bottom:16px}
+.score-big{font-family:'Syne',sans-serif;font-size:clamp(3.5rem,9vw,5.5rem);font-weight:800;line-height:1;margin-bottom:8px}
+.grade-pill{display:inline-block;padding:6px 22px;border-radius:30px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.06em;margin-bottom:18px;border:1px solid}
+.verdict-summary{font-size:14px;line-height:1.7;max-width:500px;margin:0 auto;opacity:0.8}
+.pass-c{color:var(--teal)}
+.border-c{color:var(--amber)}
+.fail-c{color:var(--rose)}
+.r-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:10px}
+.r-label{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;display:block}
+.dims-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.dim-tile{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:11px;padding:1rem;text-align:center}
+.dim-n{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;line-height:1}
+.dim-name{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4}
+.dim-bar{height:3px;background:rgba(255,255,255,0.07);border-radius:2px;margin-top:9px;overflow:hidden}
+.dim-bar-fill{height:100%;border-radius:2px}
+.qr-list{display:flex;flex-direction:column;gap:6px}
+.qr-item{border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.qr-toggle{display:flex;align-items:center;gap:10px;padding:11px 14px;cursor:pointer;background:rgba(255,255,255,0.025);transition:background 0.15s}
+.qr-toggle:hover{background:rgba(255,255,255,0.05)}
+.qr-q-text{flex:1;font-size:13px;color:var(--paper);font-weight:400;line-height:1.4}
+.qr-pill{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;padding:3px 11px;border-radius:20px;flex-shrink:0;border:1px solid}
+.pill-hi{color:var(--teal);border-color:rgba(24,184,154,0.3);background:rgba(24,184,154,0.1)}
+.pill-mid{color:var(--amber);border-color:rgba(240,165,0,0.3);background:rgba(240,165,0,0.1)}
+.pill-low{color:var(--rose);border-color:rgba(224,69,106,0.3);background:rgba(224,69,106,0.1)}
+.qr-body{display:none;padding:14px;background:rgba(255,255,255,0.02);border-top:1px solid var(--border)}
+.qr-body.open{display:block}
+.fb-row{margin-bottom:10px}
+.fb-row:last-child{margin-bottom:0}
+.fb-tag{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.fb-txt{font-size:13px;color:var(--light);line-height:1.6}
+.fb-txt.good{color:var(--teal)}
+.fb-txt.warn{color:var(--amber)}
+.hint-box{background:rgba(74,158,232,0.07);border:1px solid rgba(74,158,232,0.18);border-radius:8px;padding:10px 13px;margin-top:8px;font-size:12px;color:rgba(74,158,232,0.9);line-height:1.6;font-style:italic}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+@media(max-width:520px){.two-col{grid-template-columns:1fr}}
+.bullet-list{list-style:none}
+.bullet-list li{padding:8px 0 8px 22px;position:relative;font-size:13px;color:var(--paper);line-height:1.5;border-bottom:1px solid rgba(255,255,255,0.05)}
+.bullet-list li:last-child{border:none}
+.good-list li::before{content:'+';position:absolute;left:0;color:var(--teal);font-weight:700}
+.need-list li::before{content:'→';position:absolute;left:0;color:var(--amber);font-weight:700}
+.decision-strip{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.decision-lbl{font-size:12px;color:var(--muted);letter-spacing:0.05em;text-transform:uppercase}
+.decision-pill-lg{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;padding:8px 22px;border-radius:30px;border:1px solid}
+.next-steps-text{font-size:14px;color:var(--paper);line-height:1.75}
+.reset-btn{width:100%;padding:14px;margin-top:8px;background:transparent;border:1px solid var(--border2);border-radius:12px;color:var(--light);font-family:'Syne',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.reset-btn:hover{border-color:rgba(255,255,255,0.3);color:var(--paper);background:var(--surface)}
+.confetti-particle{position:fixed;width:8px;height:8px;border-radius:2px;pointer-events:none;z-index:9999;animation:conffall linear forwards}
+@keyframes conffall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="site-header">
+  <div class="ua92-strip">
+    <span class="ua92-badge">UA92</span>
+    <span>92 Programme · Block 4 · Personal Development</span>
+  </div>
+  <h1 class="hero-title">
+    <span class="dim">Mock</span> Interview<br>
+    <span class="accent">Junior Software</span><br>
+    <span class="accent">Engineer</span>
+  </h1>
+  <p class="hero-sub">Ten real interview questions used by tech companies. Answer each one honestly, save it, then submit for your full result and personalised feedback — instantly.</p>
+  <div class="stat-chips">
+    <span class="chip"><span class="chip-dot" style="background:var(--orange)"></span>10 Questions</span>
+    <span class="chip"><span class="chip-dot" style="background:var(--violet)"></span>6 Interview Types</span>
+    <span class="chip"><span class="chip-dot" style="background:var(--teal)"></span>Instant Feedback</span>
+    <span class="chip"><span class="chip-dot" style="background:var(--amber)"></span>Pass / Fail Result</span>
+    <span class="chip"><span class="chip-dot" style="background:var(--blue)"></span>Works Offline</span>
+  </div>
+</header>
+
+<div id="form-screen">
+  <div class="prog-section">
+    <div class="prog-row">
+      <span class="prog-label">Your progress</span>
+      <span class="prog-count"><span id="answered-n">0</span><span style="color:var(--muted);font-size:12px"> / 10 saved</span></span>
+    </div>
+    <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+  </div>
+  <div class="name-row">
+    <div class="field"><label>Your full name</label><input type="text" id="sname" placeholder="e.g. Aisha Rahman"/></div>
+    <div class="field"><label>Date</label><input type="text" id="sdate" placeholder="e.g. 13 March 2026"/></div>
+  </div>
+  <div class="q-list" id="q-list"></div>
+  <div class="submit-area">
+    <div class="submit-status" id="submit-status">Answer and save all 10 questions to unlock your result.</div>
+    <button class="submit-btn" id="submit-btn" disabled>Submit My Interview →</button>
+  </div>
+</div>
+
+<div id="loading-screen">
+  <div class="spinner"></div>
+  <div>
+    <div class="loading-title">Marking your interview…</div>
+    <div class="loading-steps">
+      <div class="loading-step"><span class="ldot" style="background:var(--orange)"></span>Scoring all 10 answers</div>
+      <div class="loading-step"><span class="ldot" style="background:var(--violet)"></span>Checking technical accuracy</div>
+      <div class="loading-step"><span class="ldot" style="background:var(--teal)"></span>Writing your personalised feedback</div>
+    </div>
+  </div>
+</div>
+
+<div id="result-screen"></div>
+</div>
+
+<script>
+var QUESTIONS=[
+  {type:'HR & Motivation',tag:'tag-hr',q:'Tell me about yourself and why you are applying for this junior software engineer role.',tip:'Keep it under 2 minutes. Cover who you are, what you have studied or built, and why this role. Do not just read your CV back to them.',kw:['university','studied','degree','computer','software','built','project','interested','passion','career','experience','module','course','coding'],minW:40,starNeeded:false,hints:{lo:'A strong answer names your degree, a project or skill, and connects them to the role. Generic answers score poorly.',mid:'Good start — add a specific project or technology and explain why this role appeals to you in particular.',hi:'Excellent self-introduction — clear, specific, and well-connected to the role.'}},
+  {type:'Behavioural (STAR)',tag:'tag-star',q:'Tell me about a time you worked in a team where there was a disagreement. How did you handle it?',tip:'Use STAR: Situation → Task → Action → Result. Name the project, the disagreement, what YOU did, and what happened.',kw:['team','disagreed','disagreement','conflict','discussed','resolved','outcome','listened','communicated','agreed','compromise','project','result','situation','spoke','approached'],minW:60,starNeeded:true,hints:{lo:'Use STAR structure: Situation, Task, Action, Result. Be specific — name the project and what YOU personally did to resolve the disagreement.',mid:'Good example — make your personal action clearer and state the outcome more specifically to strengthen this answer.',hi:'Strong STAR answer — specific situation, clear personal action, and a meaningful result. This is what interviewers want.'}},
+  {type:'Technical — Fundamentals',tag:'tag-tech',q:'Explain the difference between a stack and a queue. Give a real-world example of each.',tip:'Define both clearly, explain LIFO vs FIFO, then give concrete examples — browser back button (stack), print queue (queue).',kw:['stack','queue','lifo','fifo','last in first out','first in first out','push','pop','enqueue','dequeue','browser','print','undo','example'],minW:40,starNeeded:false,hints:{lo:'Define both data structures, explain LIFO (stack) and FIFO (queue), and give one real-world example each. Browser back button for stack, print queue for queue.',mid:'Good definitions — explicitly mention LIFO and FIFO and give one concrete real-world example for each structure.',hi:'Clear, accurate explanation with strong real-world examples. This is exactly the depth interviewers expect.'}},
+  {type:'Technical — Algorithms',tag:'tag-algo',q:'What is Big O notation? What is the time complexity of searching an unsorted array versus a binary search tree?',tip:'Explain what Big O measures (worst-case growth). Linear search = O(n). BST search = O(log n). Show you understand WHY.',kw:['big o','complexity','o(n)','o(log n)','linear','logarithmic','worst case','time complexity','search','binary','unsorted','array','grow','efficient','scale'],minW:40,starNeeded:false,hints:{lo:'Explain that Big O describes how runtime scales with input size. State O(n) for linear search and O(log n) for BST — and explain why each has that value.',mid:'Good attempt — state O(n) and O(log n) explicitly and explain the reasoning behind each value, not just the label.',hi:'Accurate and well-explained. Showing the why behind each complexity is exactly the depth good candidates demonstrate.'}},
+  {type:'Databases',tag:'tag-db',q:'What is the difference between SQL and NoSQL databases? When would you choose one over the other?',tip:'Cover structured vs unstructured data, ACID vs BASE, and scalability. Give a scenario for each — e.g. e-commerce (SQL), social feed (NoSQL).',kw:['sql','nosql','relational','schema','structured','unstructured','acid','base','scale','table','document','mongo','postgres','mysql','e-commerce','social','flexible','consistency'],minW:50,starNeeded:false,hints:{lo:'Cover the key difference (relational/structured vs flexible/document-based), mention ACID vs BASE, and give a use-case for each type.',mid:'Good overview — add a concrete use-case for each (e.g. banking for SQL, social feeds for NoSQL) and mention ACID vs BASE briefly.',hi:'Comprehensive answer covering structure, consistency models, and practical use-cases. Very strong response.'}},
+  {type:'Cybersecurity',tag:'tag-sec',q:'What is SQL injection? How would you prevent it in a web application?',tip:'Explain the attack, then the defence: parameterised queries, input validation, least privilege. Show you know the prevention, not just the threat.',kw:['sql injection','malicious','input','parameteris','prepared statement','sanitise','validate','escape','whitelist','least privilege','query','database','attack','prevent','defence','security'],minW:50,starNeeded:false,hints:{lo:'Describe the attack (malicious SQL injected via user input) and then the defences: parameterised queries / prepared statements, input validation, and least-privilege database access.',mid:'Good description of the threat — strengthen the prevention side with parameterised queries as the primary defence and input validation as secondary.',hi:'Excellent — attack vector and key defences covered clearly. Prepared statements and least privilege are exactly what interviewers want to hear.'}},
+  {type:'Problem Solving',tag:'tag-ps',q:'In pseudocode or plain English: given a list of numbers, return only those that appear more than once. Explain your approach.',tip:'Walk through your thinking. A strong answer: use a hash map to count frequencies, then filter. Mention the time complexity.',kw:['hash','dictionary','map','count','frequency','loop','iterate','filter','complexity','o(n)','appear','duplicate','key','value','store','check'],minW:40,starNeeded:false,hints:{lo:'Walk through your approach step by step. The best solution uses a hash map to count each number\'s frequency, then filters for count greater than 1. State the time complexity — O(n).',mid:'Good thinking — make the data structure explicit (hash map or dictionary) and state the time complexity of your approach.',hi:'Strong answer — hash map approach with clear explanation and time complexity mentioned. Exactly the right depth.'}},
+  {type:'System Design',tag:'tag-sys',q:'How would you design a simple URL shortener like bit.ly? Walk me through the main components.',tip:'Start with requirements. Key parts: short code generation (hash or random), a database for mappings, a redirect service. Mention scale briefly.',kw:['database','hash','random','store','redirect','lookup','generate','code','short','long','mapping','id','api','server','request','scale','collision'],minW:50,starNeeded:false,hints:{lo:'Cover the three core components: generating a short code, storing the short-to-long URL mapping in a database, and a redirect service that looks up the code.',mid:'Good components identified — add how you would generate the short code (hash or base62 encoding) and how the redirect would work.',hi:'Well-structured design covering generation, storage, and redirect. Mentioning scale or collision handling shows real depth.'}},
+  {type:'Behavioural (STAR)',tag:'tag-star',q:'Describe a project you are most proud of from university or personal work. What was your contribution and what did you learn?',tip:'Pick something real and specific. Explain your exact role, a challenge you overcame, and what you would do differently now.',kw:['project','built','developed','contribution','learned','challenge','team','individual','outcome','result','technology','improved','difficult','reflection','would','differently','proud','created'],minW:60,starNeeded:true,hints:{lo:'Name a specific project, explain your exact role, describe one challenge you faced, and state what you would do differently now.',mid:'Good project example — be more specific about your personal contribution and add a genuine reflection on what you would change.',hi:'Strong, specific answer with clear personal contribution, a real challenge, and thoughtful reflection. Very compelling.'}},
+  {type:'HR & Motivation',tag:'tag-hr',q:'Where do you see yourself in 2 years, and what specifically do you want to learn in the first 6 months of this role?',tip:'Be realistic and specific. Name a technology or skill — not just "become a senior developer". Connect it to the role.',kw:['learn','grow','skill','technology','year','months','develop','improve','goal','career','contribute','team','mentor','language','framework','senior','progress','specific'],minW:40,starNeeded:false,hints:{lo:'Be specific: name a technology you want to learn, a type of project you want to contribute to, and a realistic 2-year goal. "I want to grow" scores poorly.',mid:'Good direction — name specific technologies or skills you want to develop in the first 6 months to make this more compelling.',hi:'Specific, realistic, and well-connected to the role. Naming a technology and a 2-year goal is exactly what interviewers want.'}}
+];
+
+var answers=Array(10).fill(''), saved=Array(10).fill(false);
+
+function wordCount(s){return s.trim().split(/\s+/).filter(function(w){return w.length>1}).length;}
+
+function scoreOne(q,ans){
+  var a=ans.toLowerCase().trim(), wc=wordCount(ans);
+  var lenS=0;
+  if(wc>=q.minW*2.5)lenS=3; else if(wc>=q.minW*1.5)lenS=2; else if(wc>=q.minW)lenS=1;
+  var hits=0; q.kw.forEach(function(k){if(a.indexOf(k.toLowerCase())>=0)hits++;});
+  var kwR=hits/q.kw.length, kwS=0;
+  if(kwR>=0.5)kwS=4; else if(kwR>=0.35)kwS=3; else if(kwR>=0.2)kwS=2; else if(kwR>=0.1)kwS=1;
+  var starS=2;
+  if(q.starNeeded){
+    var sit=/situation|context|background|we were|we had|during|when i/.test(a);
+    var tsk=/task|had to|needed to|goal|responsible|my role|i was/.test(a);
+    var act=/i decided|i spoke|i asked|i created|i worked|i suggested|i organised|i wrote|i built|i implemented|i led/.test(a);
+    var res=/result|outcome|resolved|improved|succeeded|completed|learned|eventually|worked|fixed|managed/.test(a);
+    starS=Math.min(3,[sit,tsk,act,res].filter(Boolean).length);
+  }
+  var spec=/\d|percent|%|week|month|year|version|github|python|java|react|node\.js|sql|api|aws/.test(a)?1:0;
+  var raw=lenS+kwS+starS+spec;
+  var score=Math.min(10,Math.max(1,Math.round((raw/11)*10)));
+  var hint,strength,improve;
+  if(score>=7){hint=q.hints.hi;strength='Strong answer with relevant technical detail and good depth.';improve='Consider adding even more specific examples or numbers to make it truly memorable.';}
+  else if(score>=4){hint=q.hints.mid;strength=wc>=q.minW?'Good answer length with some relevant content.':'Shows some understanding of the topic.';improve=kwS<2?'Try using key terminology: '+q.kw.slice(0,4).join(', ')+'.':'Develop your points with more specific examples or technical depth.';}
+  else{hint=q.hints.lo;strength=wc>=20?'You attempted the question.':'Very brief — expand this answer significantly.';improve=kwS===0?'No key terms detected. Try mentioning: '+q.kw.slice(0,4).join(', ')+'.':'This needs more depth. Add a specific example and more technical detail.';}
+  return{score:score,hint:hint,strength:strength,improve:improve};
+}
+
+function avg(arr){return arr.reduce(function(a,b){return a+b},0)/arr.length;}
+
+function avgIdxs(scores,idxs){
+  var s=idxs.map(function(i){return scores[i]});
+  return Math.round(avg(s)*10)/10;
+}
+
+function getGrade(s){
+  if(s>=85)return'Distinction';
+  if(s>=70)return'Merit';
+  if(s>=55)return'Pass';
+  if(s>=40)return'Borderline Fail';
+  return'Fail';
+}
+
+function pillCls(s){return s>=7?'pill-hi':s>=5?'pill-mid':'pill-low';}
+function dimColor(s){return s>=7?'var(--teal)':s>=5?'var(--amber)':'var(--rose)';}
+
+function buildQuestions(){
+  var list=document.getElementById('q-list');
+  list.innerHTML='';
+  QUESTIONS.forEach(function(q,i){
+    var card=document.createElement('div');
+    card.className='q-card'+(i===0?' active':'');
+    card.id='qc-'+i;
+    card.innerHTML='<div class="q-header" onclick="toggleQ('+i+')">'
+      +'<div class="q-num" id="qn-'+i+'">'+(i+1)+'</div>'
+      +'<div class="q-meta">'
+        +'<span class="type-tag '+q.tag+'">'+q.type+'</span>'
+        +'<div class="q-text">'+q.q+'</div>'
+      +'</div>'
+      +'<div class="q-chevron" id="ch-'+i+'">'+(i===0?'▲':'▼')+'</div>'
+    +'</div>'
+    +'<div class="q-body'+(i===0?' open':'')+'" id="qb-'+i+'">'
+      +'<div class="tip-pill">💡 '+q.tip+'</div>'
+      +'<textarea id="ta-'+i+'" placeholder="Write your answer here…" oninput="onType('+i+')">'+(answers[i]||'')+'</textarea>'
+      +'<div class="ta-footer"><span class="char-count" id="cc-'+i+'">'+(answers[i]?wordCount(answers[i]):0)+' words</span>'
+      +'<button class="save-btn" onclick="saveAns('+i+')">Save answer ✓</button></div>'
+    +'</div>';
+    list.appendChild(card);
+  });
+}
+
+window.toggleQ=function(i){
+  var body=document.getElementById('qb-'+i);
+  var chev=document.getElementById('ch-'+i);
+  var wasOpen=body.classList.contains('open');
+  document.querySelectorAll('.q-body').forEach(function(b){b.classList.remove('open')});
+  document.querySelectorAll('.q-chevron').forEach(function(c){c.textContent='▼'});
+  document.querySelectorAll('.q-card').forEach(function(c){c.classList.remove('active')});
+  if(!wasOpen){body.classList.add('open');chev.textContent='▲';document.getElementById('qc-'+i).classList.add('active');}
+};
+
+window.onType=function(i){
+  answers[i]=document.getElementById('ta-'+i).value;
+  document.getElementById('cc-'+i).textContent=wordCount(answers[i])+' words';
+};
+
+window.saveAns=function(i){
+  answers[i]=(document.getElementById('ta-'+i).value||'').trim();
+  if(wordCount(answers[i])<10){alert('Please write a fuller answer before saving.');return;}
+  saved[i]=true;
+  var card=document.getElementById('qc-'+i);
+  card.classList.remove('active'); card.classList.add('answered');
+  document.getElementById('qn-'+i).textContent='✓';
+  updateProg();
+  if(i<9){setTimeout(function(){toggleQ(i+1)},200);}
+};
+
+function updateProg(){
+  var n=saved.filter(Boolean).length;
+  document.getElementById('answered-n').textContent=n;
+  document.getElementById('prog-fill').style.width=(n*10)+'%';
+  var btn=document.getElementById('submit-btn');
+  var st=document.getElementById('submit-status');
+  if(n===10){
+    btn.disabled=false;
+    st.innerHTML='<span style="width:7px;height:7px;border-radius:50%;background:var(--teal);display:inline-block;flex-shrink:0"></span> All 10 answered — you are ready to submit your interview.';
+    st.style.color='var(--teal)';
+  } else {
+    btn.disabled=true;
+    st.textContent=(10-n)+' question'+(10-n>1?'s':'')+' still to answer.';
+    st.style.color='';
+  }
+}
+
+buildQuestions();
+
+document.getElementById('submit-btn').addEventListener('click',function(){
+  var name=document.getElementById('sname').value.trim()||'Candidate';
+  var date=document.getElementById('sdate').value.trim()||'';
+  document.getElementById('form-screen').style.display='none';
+  document.getElementById('loading-screen').style.display='flex';
+
+  setTimeout(function(){
+    var qScores=QUESTIONS.map(function(q,i){return scoreOne(q,answers[i]);});
+    var nums=qScores.map(function(r){return r.score;});
+    var overall=Math.round(avg(nums)*10);
+    var grade=getGrade(overall);
+    var passed=overall>=55;
+    var borderline=overall>=40&&overall<55;
+
+    var dimTech=avgIdxs(nums,[2,3,4,5,6,7]);
+    var dimStar=avgIdxs(nums,[1,8]);
+    var dimHR  =avgIdxs(nums,[0,9]);
+    var dimPS  =avgIdxs(nums,[6,7]);
+    var dimComm=Math.min(10,Math.round((avg([wordCount(answers[0]),wordCount(answers[8]),wordCount(answers[9])])/80)*10));
+
+    var strengths=[], devs=[];
+    if(dimTech>=7) strengths.push('Good technical knowledge across algorithms, databases, and system design.');
+    else devs.push('Strengthen technical answers — review data structures, Big O notation, and SQL vs NoSQL.');
+    if(dimStar>=7) strengths.push('Strong use of the STAR technique in behavioural questions.');
+    else devs.push('Practise the STAR technique — Situation, Task, Action, Result — for behavioural questions.');
+    if(dimHR>=7) strengths.push('Clear motivation and self-awareness shown in HR questions.');
+    else devs.push('Be more specific in motivation answers — name exact technologies, roles, and goals.');
+    if(overall>=65) strengths.push('Answers show enough depth and detail to progress to the next stage.');
+    else devs.push('Most answers need more depth — add specific examples, technical terms, and outcomes.');
+    if(avg([wordCount(answers[1]),wordCount(answers[8])])>=80) strengths.push('Good answer length on behavioural questions — you gave the interviewer enough to evaluate.');
+    else devs.push('Expand your behavioural answers — longer, more detailed responses score significantly higher.');
+
+    // Build summary
+    var summary='';
+    if(overall>=80){summary='This was an impressive performance across all 10 questions. Technical answers showed real depth, behavioural examples were specific and well-structured, and motivation answers were compelling. This candidate would be a strong hire at junior level.';}
+    else if(overall>=65){summary='A solid interview overall — the candidate demonstrated enough understanding across technical and behavioural areas to progress. Some answers could be deeper, but the foundations are clearly there. With some targeted preparation, this candidate would be competitive for junior roles.';}
+    else if(overall>=50){summary='A mixed performance — some good moments, but inconsistency across the 10 questions. Stronger technical knowledge is needed, and behavioural answers would benefit from the STAR structure. With focused preparation on the areas below, this candidate has the potential to pass at re-attempt.';}
+    else{summary='This interview did not reach the standard required for a junior software engineer role. Key technical concepts need more study, and answers lacked the specificity and depth interviewers expect. The feedback below gives a clear roadmap for what to focus on before re-attempting.';}
+
+    var decision=overall>=80?'Strong yes':overall>=65?'Yes':overall>=50?'Maybe — needs more':'No — not ready yet';
+
+    // Next steps
+    var nextArr=[];
+    if(dimTech<6) nextArr.push('Revise core data structures (stack, queue, hash map, BST) and Big O notation — these come up in almost every technical interview.');
+    if(qScores[4].score<6) nextArr.push('Study SQL vs NoSQL trade-offs — read about ACID properties and when you would use MongoDB vs PostgreSQL.');
+    if(qScores[5].score<6) nextArr.push('Review the OWASP Top 10, especially SQL injection and XSS — and practise explaining parameterised queries.');
+    if(dimStar<6) nextArr.push('Practise the STAR technique on 5 real examples from your uni or personal projects — write them out and time yourself saying them.');
+    if(dimHR<6) nextArr.push('Research the company before any real interview and prepare 2-3 specific examples of technologies you want to learn there.');
+    if(nextArr.length===0) nextArr.push('Keep practising! Focus on deepening your system design knowledge and preparing for follow-up questions after your STAR answers.');
+
+    document.getElementById('loading-screen').style.display='none';
+    renderResult({
+      overall:overall, grade:grade, passed:passed, borderline:borderline,
+      summary:summary, qScores:qScores, nums:nums,
+      dims:[
+        {name:'Technical knowledge',score:Math.round(dimTech)},
+        {name:'Problem solving',score:Math.round(dimPS)},
+        {name:'Behavioural / STAR',score:Math.round(dimStar)},
+        {name:'HR & motivation',score:Math.round(dimHR)},
+        {name:'Communication',score:Math.min(10,dimComm)}
+      ],
+      strengths:strengths, devs:devs, decision:decision,
+      nextSteps:nextArr.join(' ')
+    }, name, date);
+  }, 2000);
+});
+
+function renderResult(r,name,date){
+  var heroClass=r.overall>=65?'hero-pass':r.overall>=40?'hero-border':'hero-fail';
+  var colorClass=r.overall>=65?'pass-c':r.overall>=40?'border-c':'fail-c';
+  var icon=r.overall>=80?'🎉':r.overall>=65?'✅':r.overall>=40?'⚠️':'❌';
+
+  var gradePill='';
+  if(r.overall>=65) gradePill='border-color:rgba(24,184,154,0.3);color:var(--teal);background:rgba(24,184,154,0.1)';
+  else if(r.overall>=40) gradePill='border-color:rgba(240,165,0,0.3);color:var(--amber);background:rgba(240,165,0,0.1)';
+  else gradePill='border-color:rgba(224,69,106,0.3);color:var(--rose);background:rgba(224,69,106,0.1)';
+
+  var dimsHTML=r.dims.map(function(d){
+    var col=dimColor(d.score);
+    return '<div class="dim-tile">'
+      +'<div class="dim-n" style="color:'+col+'">'+d.score+'<span style="font-size:40%;opacity:0.4">/10</span></div>'
+      +'<div class="dim-name">'+d.name+'</div>'
+      +'<div class="dim-bar"><div class="dim-bar-fill" style="width:'+(d.score*10)+'%;background:'+col+'"></div></div>'
+    +'</div>';
+  }).join('');
+
+  var qrHTML=r.qScores.map(function(qs,i){
+    var pc=pillCls(qs.score);
+    return '<div class="qr-item">'
+      +'<div class="qr-toggle" onclick="this.nextElementSibling.classList.toggle(\'open\')">'
+        +'<span class="qr-q-text">Q'+(i+1)+' · '+QUESTIONS[i].type+'</span>'
+        +'<span class="qr-pill '+pc+'">'+qs.score+'/10</span>'
+        +'<span style="font-size:10px;color:var(--muted);margin-left:4px">▼</span>'
+      +'</div>'
+      +'<div class="qr-body">'
+        +'<div class="fb-row"><div class="fb-tag">Question</div><div class="fb-txt" style="color:var(--paper);font-weight:500">'+QUESTIONS[i].q+'</div></div>'
+        +'<div class="fb-row"><div class="fb-tag">What went well</div><div class="fb-txt good">'+qs.strength+'</div></div>'
+        +'<div class="fb-row"><div class="fb-tag">What to improve</div><div class="fb-txt warn">'+qs.improve+'</div></div>'
+        +'<div class="hint-box">'+qs.hint+'</div>'
+      +'</div>'
+    +'</div>';
+  }).join('');
+
+  var stHTML=r.strengths.map(function(s){return '<li>'+s+'</li>';}).join('');
+  var dvHTML=r.devs.map(function(s){return '<li>'+s+'</li>';}).join('');
+
+  var decStyle=r.overall>=80?'color:var(--teal);border-color:rgba(24,184,154,0.3);background:rgba(24,184,154,0.1)':
+               r.overall>=65?'color:var(--teal);border-color:rgba(24,184,154,0.3);background:rgba(24,184,154,0.1)':
+               r.overall>=40?'color:var(--amber);border-color:rgba(240,165,0,0.3);background:rgba(240,165,0,0.1)':
+               'color:var(--rose);border-color:rgba(224,69,106,0.3);background:rgba(224,69,106,0.1)';
+
+  var rs=document.getElementById('result-screen');
+  rs.innerHTML='<div class="verdict-hero '+heroClass+'">'
+    +'<span class="verdict-emoji">'+icon+'</span>'
+    +'<div class="verdict-eyebrow '+colorClass+'">'+name+(date?' · '+date:'')+'</div>'
+    +'<div class="verdict-name '+colorClass+'">'+r.grade+'</div>'
+    +'<div class="score-big '+colorClass+'">'+r.overall+'<sub style="font-size:35%;opacity:0.45;vertical-align:super">/100</sub></div>'
+    +'<div class="grade-pill" style="'+gradePill+'">Junior Software Engineer · '+(r.passed?'PASS':r.borderline?'BORDERLINE':'FAIL')+'</div>'
+    +'<div class="verdict-summary">'+r.summary+'</div>'
+  +'</div>'
+
+  +'<div class="r-card"><span class="r-label">Score breakdown by area</span><div class="dims-grid">'+dimsHTML+'</div></div>'
+
+  +'<div class="r-card"><span class="r-label">Question-by-question — click any question to see full feedback</span><div class="qr-list">'+qrHTML+'</div></div>'
+
+  +'<div class="two-col">'
+    +'<div class="r-card" style="margin:0"><span class="r-label">Strengths demonstrated</span><ul class="bullet-list good-list">'+stHTML+'</ul></div>'
+    +'<div class="r-card" style="margin:0"><span class="r-label">Areas to develop</span><ul class="bullet-list need-list">'+dvHTML+'</ul></div>'
+  +'</div>'
+
+  +'<div class="r-card"><span class="r-label">Hiring panel decision</span>'
+    +'<div class="decision-strip">'
+      +'<p style="font-size:14px;color:var(--paper);line-height:1.7;flex:1">Based on the performance across all 10 questions, the panel\'s decision is:</p>'
+      +'<span class="decision-pill-lg" style="'+decStyle+'">'+r.decision+'</span>'
+    +'</div>'
+  +'</div>'
+
+  +'<div class="r-card"><span class="r-label">Your next steps before the real interview</span>'
+    +'<p class="next-steps-text">'+r.nextSteps+'</p>'
+  +'</div>'
+
+  +'<button class="reset-btn" onclick="resetAll()">↩ Try again with new answers</button>';
+
+  rs.style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  if(r.passed){spawnConfetti();}
+}
+
+function spawnConfetti(){
+  var colors=['#E8601E','#F0A500','#18B89A','#8B6EF5','#E0456A','#4A9EE8'];
+  for(var i=0;i<60;i++){
+    (function(idx){
+      setTimeout(function(){
+        var el=document.createElement('span');
+        el.className='confetti-particle';
+        el.style.left=Math.random()*100+'vw';
+        el.style.top='-10px';
+        el.style.background=colors[Math.floor(Math.random()*colors.length)];
+        el.style.animationDuration=(Math.random()*2+1.5)+'s';
+        el.style.animationDelay='0s';
+        el.style.transform='rotate('+Math.random()*360+'deg)';
+        document.body.appendChild(el);
+        setTimeout(function(){el.remove();},4000);
+      },idx*50);
+    })(i);
+  }
+}
+
+window.resetAll=function(){
+  for(var i=0;i<10;i++){answers[i]='';saved[i]=false;}
+  document.getElementById('result-screen').style.display='none';
+  document.getElementById('result-screen').innerHTML='';
+  document.getElementById('form-screen').style.display='block';
+  buildQuestions(); updateProg();
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+</script>
+</body>
+</html>
